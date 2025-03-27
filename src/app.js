@@ -1,22 +1,30 @@
 // Main Express application configuration.
 import express from "express";
-import cors from 'cors'; //Enable Cross origin Resource sharing
-import morgan from "morgan"; // Middleware for logging HTTP requests.
+import cors from "cors"; // Enable Cross-Origin Resource Sharing
+import morgan from "morgan"; // Middleware for logging HTTP requests
+import dotenv from "dotenv"; // To load environment variables
+import connectDB from "./config/db.js"; // DB connection
+
+// Import routes
 import movieRouter from "./routes/moviesRoutes.js";
+import authRouter from "./routes/authRoutes.js"; 
 
+// Initialize Express app
+const app = express();
 
-const app =express();
+// Load .env variables
+dotenv.config();
 
-//Middleware to process JSON requests
-app.use(express.json());
-  
-// Enable CORS to allow cross-origin requests
-app.use(cors())
+// Connect to MongoDB
+connectDB();
 
-//HTTP request logging
-app.use(morgan("dev")); 
+// Middleware
+app.use(express.json()); // To parse incoming JSON
+app.use(cors());         // To allow cross-origin requests
+app.use(morgan("dev"));  // HTTP request logger
 
-//Routes for movies
+// Routes
 app.use("/movies", movieRouter);
+app.use("/api/auth", authRouter); 
 
 export default app;
